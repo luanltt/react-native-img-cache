@@ -46,6 +46,22 @@ export class ImageCache {
     }
 
     private cache: { [uri: string]: CacheEntry } = {};
+    
+    getTotalSize() {
+      return new Promise((resolve, reject) => {
+        RNFetchBlob.fs.lstat(BASE_DIR)
+          .then(files => {
+              let totalSize = 0;
+
+              if (Array.isArray(files)) {
+                  files.forEach(file => (totalSize += parseFloat(file.size)));
+              }
+
+              resolve(totalSize);
+          })
+          .catch(err => reject(err));
+      });
+    }
 
     clear() {
         this.cache = {};
